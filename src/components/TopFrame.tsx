@@ -1,0 +1,65 @@
+// src/components/TopFrame.tsx
+import React from 'react';
+import convolutionLogo from '../assets/images/convolution-square.svg';
+
+const TopFrame: React.FC = () => {
+  return (
+    <div className="top-frame">
+      <div className="frame-content">
+        <SiteBranding />
+        <ExternalLinks />
+      </div>
+    </div>
+  );
+};
+
+export default TopFrame;
+
+/* =============== Subcomponentes internos =============== */
+
+function SiteBranding() {
+  return (
+    <div className="site-branding">
+      <img
+        src={convolutionLogo}
+        alt="Convolution Icon"
+        className="site-icon"
+      />
+      <h1 className="site-title">Convolution Character Generator</h1>
+    </div>
+  );
+}
+
+function ExternalLinks() {
+  return (
+    <div className="external-links">
+      <a
+        href="https://github.com/ConvolutionSOL"
+        title="Convolution Main Repository"
+        target="_blank"
+        rel="noopener"
+      >
+        <i className="fa-brands fa-github external-icon"></i>
+      </a>
+      <a
+        href="https://github.com/ConvolutionSOL"
+        title="Convolution Installer"
+        target="_blank"
+        rel="noopener"
+      >
+        <i className="fa-solid fa-download external-icon"></i>
+      </a>
+      {/* 
+        Si tenías más enlaces comentados, introdúcelos aquí 
+        o déjalos comentados si no los necesitas 
+      */}
+      <button
+        id="theme-toggle"
+        className="theme-toggle"
+        title="Toggle dark mode"
+      >
+        <i className="fa-solid fa-moon theme-icon"></i>
+      </button>
+    </div>
+  );
+}
