@@ -3,11 +3,20 @@ export function splitIntoSentences(text: string): string[] {
   if (!text || typeof text !== 'string' || text.trim() === '') {
     return [];
   }
+  // Si hay saltos de línea, usamos esos para separar las oraciones
+  if (text.includes('\n')) {
+    return text
+      .split('\n')
+      .map(sentence => sentence.trim())
+      .filter(sentence => sentence.length > 0)
+      .map(sentence => sentence.endsWith('.') ? sentence : sentence);
+  }
+  // Si no hay saltos de línea, separamos por puntuación
   return text
     .split(/[.!?]+/)
     .map(sentence => sentence.trim())
     .filter(sentence => sentence.length > 0)
-    .map(sentence => sentence + '.');
+    .map(sentence => sentence);
 }
 
 export function formatFileSize(bytes: number): string {

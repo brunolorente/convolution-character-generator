@@ -60,6 +60,31 @@ export interface UIElements {
   characterDropZone: HTMLDivElement;
   characterFileStatus: HTMLDivElement;
   knowledgeEntries: HTMLDivElement;
+  addExampleBtn:HTMLButtonElement;
+  saveKeyBtn: HTMLButtonElement;
+  characterFileInput:HTMLInputElement;
+  characterFileButton: HTMLButtonElement;
+  fileInput: HTMLInputElement;
+  fileButton: HTMLButtonElement;
+  generateJsonBtn: HTMLButtonElement;
+  peopleContainer: HTMLDivElement;
+  addPersonBtn: HTMLButtonElement;
+  adjectivesContainer: HTMLDivElement;
+  addAdjectiveBtn: HTMLButtonElement;
+  processKnowledgeBtn: HTMLButtonElement;
+  addKnowledgeBtn: HTMLButtonElement;
+  clientToggles: HTMLButtonElement[];
+  characterName: HTMLInputElement;
+  modelProvider: HTMLInputElement;
+  voiceModel: HTMLInputElement;
+  bioInput: HTMLInputElement;
+  loreInput: HTMLInputElement;
+  topicsInput: HTMLInputElement;
+  styleAllInput: HTMLInputElement;
+  styleChatInput: HTMLInputElement;
+  stylePostInput: HTMLInputElement;
+  adjectivesInput: HTMLInputElement;
+  postExamplesInput: HTMLInputElement;
 }
 
 export interface ApiResponse<T> {

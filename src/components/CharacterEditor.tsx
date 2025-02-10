@@ -1,0 +1,284 @@
+// src/components/CharacterEditor.tsx
+import React, { useState } from 'react';
+import Sidebar from './Sidebar';
+import CharacterDetailsSection from './CharacterDetailsSection';
+import KnowledgeProcessingSection from './KnowledgeProcessingSection';
+import ExamplesSection from './ExamplesSection';
+import AdjectivesAndPeopleSection from './AdjectivesAndPeopleSection';
+import CharacterResultSection from './CharacterResultSection';
+import { CharacterData, MessageExample, BackupListItem } from '../types';
+import ClientToggles from './ClientToggles';
+
+const initialCharacter: CharacterData = {
+  name: '',
+  clients: [],
+  modelProvider: '',
+  settings: { secrets: {}, voice: { model: '' } },
+  plugins: [],
+  bio: [],
+  lore: [],
+  knowledge: [],
+  messageExamples: [],
+  postExamples: [],
+  topics: [],
+  style: { all: [], chat: [], post: [] },
+  adjectives: [],
+  people: [],
+};
+
+const CharacterEditor: React.FC = () => {
+  const [character, setCharacter] = useState<CharacterData>(initialCharacter);
+  const [backups, setBackups] = useState<BackupListItem[]>([]);
+
+  // Handler para actualizar campos simples o anidados
+  const handleInputChange = (field: string, value: any) => {
+    if (field.includes('.')) {
+      const keys = field.split('.');
+      setCharacter(prev => {
+        const newChar = { ...prev } as any;
+        let pointer = newChar;
+        for (let i = 0; i < keys.length - 1; i++) {
+          pointer[keys[i]] = { ...pointer[keys[i]] };
+          pointer = pointer[keys[i]];
+        }
+        pointer[keys[keys.length - 1]] = value;
+        return newChar;
+      });
+    } else {
+      setCharacter(prev => ({ ...prev, [field]: value }));
+    }
+  };
+
+  const updateNestedField = (path: string, value: any) => {
+    const keys = path.split('.');
+    setCharacter(prev => {
+      const newState = { ...prev } as any;
+      let pointer = newState;
+      keys.forEach((key, index) => {
+        if (index === keys.length - 1) {
+          pointer[key] = value;
+        } else {
+          pointer[key] = { ...pointer[key] };
+          pointer = pointer[key];
+        }
+      });
+      return newState;
+    });
+  };
+
+  // Handlers para el Sidebar, backups, generación y refinamiento (se mantienen igual)
+  const handleLoadCharacter = (characterData: CharacterData) => {
+    const loadedCharacter: CharacterData = {
+      ...initialCharacter,
+      ...characterData,
+      clients: Array.isArray(characterData.clients) ? characterData.clients : [],
+      adjectives: Array.isArray(characterData.adjectives) ? characterData.adjectives : [],
+      people: Array.isArray(characterData.people) ? characterData.people : [],
+    };
+    setCharacter(loadedCharacter);
+  };
+
+  // Handlers de backups (simplificados)
+  const handleSaveBackup = (name: string) => {
+    const newBackup: BackupListItem = {
+      name,
+      timestamp: new Date().toLocaleString(),
+      key: name.toLowerCase().replace(/\s+/g, '_'),
+    };
+    setBackups(prev => [...prev, newBackup]);
+  };
+
+  const handleLoadBackup = (name: string) => {
+    alert(`Load backup: ${name}`);
+  };
+
+  const handleRenameBackup = (oldName: string, newName: string) => {
+    setBackups(prev =>
+      prev.map(b =>
+        b.name === oldName
+          ? { ...b, name: newName, key: newName.toLowerCase().replace(/\s+/g, '_') }
+          : b
+      )
+    );
+  };
+
+  const handleDeleteBackup = (name: string) => {
+    setBackups(prev => prev.filter(b => b.name !== name));
+  };
+
+  // Handlers para llamadas a la API
+  const handleGenerateCharacter = async (prompt: string, model: string, apiKey: string) => {
+    try {
+      const response = await fetch('/api/generate-character', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': apiKey,
+        },
+        body: JSON.stringify({ prompt, model }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setCharacter(data.character);
+    } catch (error: any) {
+      console.error('Generation error:', error);
+      alert(`Error generating character: ${error.message}`);
+    }
+  };
+
+  const handleRefineCharacter = async (prompt: string, model: string, apiKey: string) => {
+    try {
+      const response = await fetch('/api/refine-character', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': apiKey,
+        },
+        body: JSON.stringify({ prompt, model, currentCharacter: character }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setCharacter(data.character);
+    } catch (error: any) {
+      console.error('Refinement error:', error);
+      alert(`Error refining character: ${error.message}`);
+    }
+  };
+
+  // Handlers para actualizar arrays (knowledge, messageExamples, postExamples, adjectives, people)
+  const updateKnowledge = (newKnowledge: string[]) => {
+    setCharacter(prev => ({ ...prev, knowledge: newKnowledge }));
+  };
+
+  const updateMessageExamples = (newExamples: MessageExample[][]) => {
+    setCharacter(prev => ({ ...prev, messageExamples: newExamples }));
+  };
+
+  const updatePostExamples = (newPosts: string[]) => {
+    setCharacter(prev => ({ ...prev, postExamples: newPosts }));
+  };
+
+  const updateAdjectives = (newAdjectives: string[]) => {
+    setCharacter(prev => ({ ...prev, adjectives: newAdjectives }));
+  };
+
+  const updatePeople = (newPeople: string[]) => {
+    setCharacter(prev => ({ ...prev, people: newPeople }));
+  };
+
+  return (
+    <div className="container">
+      <Sidebar
+        onLoadCharacter={handleLoadCharacter}
+        backups={backups}
+        onSaveBackup={handleSaveBackup}
+        onLoadBackup={handleLoadBackup}
+        onRenameBackup={handleRenameBackup}
+        onDeleteBackup={handleDeleteBackup}
+        onGenerateCharacter={handleGenerateCharacter}
+        onRefineCharacter={handleRefineCharacter}
+      />
+      <div className="main-content">
+        {/* Basic Information */}
+        <section className="section">
+          <div className="section-header">
+            <span>Basic Information</span>
+            <button className="icon-button help-button" title="Set the character's name, model provider, and voice settings">
+              <i className="fa-solid fa-id-card"></i>
+            </button>
+          </div>
+          <div className="section-content">
+            <div className="form-group">
+              <label htmlFor="character-name">Character Name</label>
+              <input
+                type="text"
+                id="character-name"
+                placeholder="Enter the character's full name (e.g., John Smith, Lady Catherine)"
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                value={character.name}
+              />
+            </div>
+            <div className="form-group">
+              <label>Available Clients</label>
+              <ClientToggles
+                availableClients={['discord', 'direct', 'twitter', 'telegram', 'farcaster']}
+                selectedClients={character.clients}
+                onChange={(value: string[]) =>
+                  setCharacter(prev => ({ ...prev, clients: value }))
+                }
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="model-provider">Model Provider</label>
+              <select
+                id="model-provider"
+                onChange={(e) => handleInputChange('modelProvider', e.target.value)}
+                value={character.modelProvider}
+              >
+                <option value="">Select a provider</option>
+                <option value="openai">OpenAI</option>
+                <option value="eternalai">EternalAI</option>
+                <option value="anthropic">Anthropic</option>
+                <option value="grok">Grok</option>
+                <option value="groq">Groq</option>
+                <option value="llama_cloud">Llama Cloud</option>
+                <option value="together">Together</option>
+                <option value="llama_local">Llama Local</option>
+                <option value="google">Google</option>
+                <option value="claude_vertex">Claude Vertex</option>
+                <option value="redpill">Redpill</option>
+                <option value="openrouter">OpenRouter</option>
+                <option value="ollama">Ollama</option>
+                <option value="heurist">Heurist</option>
+                <option value="galadriel">Galadriel</option>
+                <option value="falai">FalAI</option>
+                <option value="gaianet">GaiaNet</option>
+                <option value="ali_bailian">Ali Bailian</option>
+                <option value="volengine">VolEngine</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="voice-model">Voice Model</label>
+              <input
+                type="text"
+                id="voice-model"
+                placeholder="Voice synthesis model identifier for text-to-speech"
+                onChange={(e) => updateNestedField('settings.voice.model', e.target.value)}
+                value={character.settings.voice.model}
+              />
+            </div>
+          </div>
+        </section>
+
+        <CharacterDetailsSection
+          character={character}
+          handleInputChange={handleInputChange}
+        />
+        <KnowledgeProcessingSection
+          knowledge={character.knowledge}
+          onKnowledgeChange={updateKnowledge}
+        />
+        <ExamplesSection
+          messageExamples={character.messageExamples}
+          postExamples={character.postExamples}
+          characterName={character.name}
+          onMessageExamplesChange={updateMessageExamples}
+          onPostExamplesChange={updatePostExamples}
+        />
+        <AdjectivesAndPeopleSection
+          adjectives={character.adjectives}
+          people={character.people}
+          onAdjectivesChange={updateAdjectives}
+          onPeopleChange={updatePeople}
+        />
+        <CharacterResultSection character={character} />
+      </div>
+    </div>
+  );
+};
+
+export default CharacterEditor;

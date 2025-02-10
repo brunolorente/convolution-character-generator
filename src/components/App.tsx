@@ -1,22 +1,12 @@
 // src/components/App.tsx
 import React, { useEffect } from 'react';
-import { UIService } from '../services/uiService';
 import { ApiKeyService } from '../services/apiKeyService';
-import { ThemeService } from '../services/themeService';
 
 import TopFrame from './TopFrame';
-import Sidebar from './Sidebar';
-import MainContent from './MainContent';
+import CharacterEditor from './CharacterEditor';
 
 const App: React.FC = () => {
   useEffect(() => {
-    // Lógica que antes estaba en main.ts (DOMContentLoaded)
-    const uiService = UIService.getInstance();
-    uiService.initialize();
-
-    const themeService = ThemeService.getInstance();
-    themeService.initialize();
-
     const apiKeyService = ApiKeyService.getInstance();
     const apiKeyInputEl = document.getElementById('api-key-input');
     const apiKeyStatusEl = document.getElementById('api-key-status');
@@ -66,11 +56,7 @@ const App: React.FC = () => {
   return (
     <>
       <TopFrame />
-      <div className="container">
-        <Sidebar />
-        <MainContent />
-        {/* Si quieres, aquí pondrías <CreditsColumn /> algún día */}
-      </div>
+      <CharacterEditor />
     </>
   );
 };

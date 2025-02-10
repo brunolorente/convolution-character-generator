@@ -1,13 +1,16 @@
 // src/components/TopFrame.tsx
 import React from 'react';
 import convolutionLogo from '../assets/images/convolution-square.svg';
+import { useTheme } from '../hooks/useTheme';
 
 const TopFrame: React.FC = () => {
+  const [theme, toggleTheme] = useTheme();
+
   return (
     <div className="top-frame">
       <div className="frame-content">
         <SiteBranding />
-        <ExternalLinks />
+        <ExternalLinks toggleTheme={toggleTheme} theme={theme} />
       </div>
     </div>
   );
@@ -30,7 +33,7 @@ function SiteBranding() {
   );
 }
 
-function ExternalLinks() {
+function ExternalLinks({ toggleTheme, theme }: { toggleTheme: () => void, theme: 'light' | 'dark' }) {
   return (
     <div className="external-links">
       <a
@@ -57,6 +60,7 @@ function ExternalLinks() {
         id="theme-toggle"
         className="theme-toggle"
         title="Toggle dark mode"
+        onClick={toggleTheme}
       >
         <i className="fa-solid fa-moon theme-icon"></i>
       </button>
