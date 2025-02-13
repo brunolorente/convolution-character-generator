@@ -23,7 +23,8 @@
     "node-fetch": "^3.3.2",
     "pdfjs-dist": "^2.14.305",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-select": "^5.10.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

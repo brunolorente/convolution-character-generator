@@ -1,10 +1,12 @@
 // src/components/GenerateCharacterSection.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface GenerateCharacterSectionProps {
   onGenerateCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
   onRefineCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
 }
+
+const API_KEY_STORAGE_KEY = 'openrouter_api_key';
 
 const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
   onGenerateCharacter,
@@ -12,8 +14,36 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
 }) => {
   const [model, setModel] = useState<string>('');
   const [apiKey, setApiKey] = useState<string>('');
+  const [savedApiKey, setSavedApiKey] = useState<string | null>(null);
   const [prompt, setPrompt] = useState<string>('');
   const [status, setStatus] = useState<string>('');
+
+  // Al montar el componente, comprobamos si hay API key guardada en localStorage
+  useEffect(() => {
+    const storedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+    if (storedKey) {
+      setSavedApiKey(storedKey);
+      setApiKey(storedKey); // opcional, para prellenar el input
+    }
+  }, []);
+
+  const handleSaveApiKey = () => {
+    const trimmedKey = apiKey.trim();
+    if (!trimmedKey) {
+      setStatus('Please enter a valid API key');
+      return;
+    }
+    localStorage.setItem(API_KEY_STORAGE_KEY, trimmedKey);
+    setSavedApiKey(trimmedKey);
+    setStatus('API key saved successfully');
+  };
+
+  const handleRemoveApiKey = () => {
+    localStorage.removeItem(API_KEY_STORAGE_KEY);
+    setSavedApiKey(null);
+    setApiKey('');
+    setStatus('API key removed');
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -24,13 +54,14 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       setStatus('Please select a model');
       return;
     }
-    if (!apiKey) {
+    if (!savedApiKey && !apiKey) {
       setStatus('Please set your OpenRouter API key');
       return;
     }
+    const keyToUse = savedApiKey || apiKey;
     setStatus('Generating character...');
     try {
-      await onGenerateCharacter(prompt, model, apiKey);
+      await onGenerateCharacter(prompt, model, keyToUse);
       setStatus('Character generated successfully');
     } catch (err: any) {
       setStatus(`Error: ${err.message}`);
@@ -46,13 +77,14 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       setStatus('Please select a model');
       return;
     }
-    if (!apiKey) {
+    if (!savedApiKey && !apiKey) {
       setStatus('Please set your OpenRouter API key');
       return;
     }
+    const keyToUse = savedApiKey || apiKey;
     setStatus('Refining character...');
     try {
-      await onRefineCharacter(prompt, model, apiKey);
+      await onRefineCharacter(prompt, model, keyToUse);
       setStatus('Character refined successfully');
     } catch (err: any) {
       setStatus(`Error: ${err.message}`);
@@ -63,14 +95,22 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
     <section className="section">
       <div className="section-header">
         <span>Generate Character</span>
-        <button className="icon-button help-button" title="Generate a new character using AI by providing a description">
+        <button
+          className="icon-button help-button"
+          title="Generate a new character using AI by providing a description"
+        >
           <i className="fa-solid fa-wand-sparkles"></i>
         </button>
       </div>
       <div className="section-content">
         <div className="form-group">
           <label htmlFor="model-select">AI Model</label>
-          <select id="model-select" value={model} onChange={(e) => setModel(e.target.value)}>
+          <select
+            id="model-select"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+          >
+            <option value="">Select a model</option>
             <optgroup label="OpenAI Models">
               <option value="openai/gpt-4-0125-preview">GPT-4 Turbo Preview (0125)</option>
               <option value="openai/gpt-4-1106-preview">GPT-4 Turbo Preview (1106)</option>
@@ -94,6 +134,7 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
               <option value="google/palm-2-vision">PaLM 2 Vision</option>
             </optgroup>
             <optgroup label="Meta Models">
+              <option value="meta-llama/llama-3.2-3b-instruct">Llama 3.2 3B Instruc [FREE]</option>
               <option value="meta/llama-2-70b-chat">Llama 2 70B Chat [FREE]</option>
               <option value="meta/llama-2-13b-chat">Llama 2 13B Chat [FREE]</option>
               <option value="meta/llama-2-7b-chat">Llama 2 7B Chat [FREE]</option>
@@ -118,19 +159,37 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
         </div>
         <div className="form-group">
           <label htmlFor="api-key">OpenRouter API Key</label>
-          <div id="api-key-input" className="input-group" style={{ display: 'flex' }}>
-            <input
-              type="text"
-              id="api-key"
-              placeholder="Enter your OpenRouter API key starting with 'sk-' from openrouter.ai"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
-            <button id="save-key" className="action-button save-button" title="Save API Key" onClick={() => {/* opcional: guardar en localStorage */}}>
-              <i className="fa-solid fa-floppy-disk"></i>
-            </button>
-          </div>
-          {/* Aquí podrías mostrar el estado del API key si es necesario */}
+          {savedApiKey ? (
+            <div id="api-key-status" className="api-key-status" style={{ display: 'flex' }}>
+              <span className="status-text">API key is set</span>
+              <button
+                id="remove-key"
+                className="action-button delete-button"
+                title="Remove API Key"
+                onClick={handleRemoveApiKey}
+              >
+                <i className="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          ) : (
+            <div id="api-key-input" className="input-group" style={{ display: 'flex' }}>
+              <input
+                type="text"
+                id="api-key"
+                placeholder="Enter your OpenRouter API key starting with 'sk-' from openrouter.ai"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+              />
+              <button
+                id="save-key"
+                className="action-button save-button"
+                title="Save API Key"
+                onClick={handleSaveApiKey}
+              >
+                <i className="fa-solid fa-floppy-disk"></i>
+              </button>
+            </div>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="character-prompt">Character Description</label>
@@ -142,15 +201,27 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
               onChange={(e) => setPrompt(e.target.value)}
             ></textarea>
             <div className="button-group">
-              <button id="generate-from-prompt" className="action-button generate-button" title="Generate from Prompt" onClick={handleGenerate}>
+              <button
+                id="generate-from-prompt"
+                className="action-button generate-button"
+                title="Generate from Prompt"
+                onClick={handleGenerate}
+              >
                 <i className="fa-solid fa-bolt"></i>
               </button>
-              <button id="refine-character" className="action-button generate-button" title="Refine existing character" onClick={handleRefine}>
+              <button
+                id="refine-character"
+                className="action-button generate-button"
+                title="Refine existing character"
+                onClick={handleRefine}
+              >
                 <i className="fa-solid fa-wand-sparkles"></i>
               </button>
             </div>
           </div>
-          <div id="prompt-status">{status}</div>
+          <div id="prompt-status" className="error">
+            {status}
+          </div>
         </div>
       </div>
     </section>

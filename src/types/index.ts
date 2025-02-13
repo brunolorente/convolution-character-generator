@@ -114,6 +114,37 @@ export interface KnowledgeUpdateEvent extends Event {
   };
 }
 
+export interface OpenRouterModel {
+  id: string
+  name: string
+  created: number
+  description: string
+  context_length: number
+  architecture: Architecture
+  pricing: Pricing
+  top_provider: TopProvider
+  per_request_limits: any
+}
+
+export interface Architecture {
+  modality: string
+  tokenizer: string
+  instruct_type: string
+}
+
+export interface Pricing {
+  prompt: string
+  completion: string
+  image: string
+  request: string
+}
+
+export interface TopProvider {
+  context_length: number
+  max_completion_tokens: any
+  is_moderated: boolean
+}
+
 // Declarar los eventos personalizados
 declare global {
   interface HTMLElementEventMap {

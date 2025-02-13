@@ -1,18 +1,21 @@
 // src/components/CharacterEditor.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import Sidebar from './Sidebar';
 import CharacterDetailsSection from './CharacterDetailsSection';
 import KnowledgeProcessingSection from './KnowledgeProcessingSection';
 import ExamplesSection from './ExamplesSection';
 import AdjectivesAndPeopleSection from './AdjectivesAndPeopleSection';
 import CharacterResultSection from './CharacterResultSection';
-import { CharacterData, MessageExample, BackupListItem } from '../types';
+import { CharacterData, MessageExample, BackupListItem, OpenRouterModel } from '../types';
 import ClientToggles from './ClientToggles';
+import ModelProviderSelect from './inputs/ModelProviderSelect';
+
 
 const initialCharacter: CharacterData = {
   name: '',
   clients: [],
-  modelProvider: '',
+  modelProvider: 'openrouter',
   settings: { secrets: {}, voice: { model: '' } },
   plugins: [],
   bio: [],
@@ -29,6 +32,12 @@ const initialCharacter: CharacterData = {
 const CharacterEditor: React.FC = () => {
   const [character, setCharacter] = useState<CharacterData>(initialCharacter);
   const [backups, setBackups] = useState<BackupListItem[]>([]);
+  const [openRouterAvailableModels, setOpenRouterAvailableModels] = useState<OpenRouterModel[]>([]);
+  const [openRouterSelectedModel, setOpenRouterSelectedModel] = useState<string>();
+
+  useEffect(() => {
+    handleGetAvailableModels();
+  }, [])
 
   // Handler para actualizar campos simples o anidados
   const handleInputChange = (field: string, value: any) => {
@@ -109,7 +118,7 @@ const CharacterEditor: React.FC = () => {
   // Handlers para llamadas a la API
   const handleGenerateCharacter = async (prompt: string, model: string, apiKey: string) => {
     try {
-      const response = await fetch('/api/generate-character', {
+      const response = await fetch('http://0.0.0.0:4001/api/generate-character', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -121,12 +130,30 @@ const CharacterEditor: React.FC = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      data.character.people = [];
       setCharacter(data.character);
     } catch (error: any) {
       console.error('Generation error:', error);
       alert(`Error generating character: ${error.message}`);
     }
   };
+
+  const handleGetAvailableModels = async() => {
+    try {
+      const rawResponse = await fetch('https://openrouter.ai/api/v1/models', {
+        method: 'GET',
+      })
+      if (!rawResponse.ok) {
+        throw new Error(`HTTP error! status: ${rawResponse.status}`);
+      }
+      const jsonData = await rawResponse.json();
+      const text2textModels = jsonData.data.filter((model: OpenRouterModel) => model.architecture.modality === 'text->text');
+      setOpenRouterAvailableModels(text2textModels);
+    } catch (error: any) {
+      console.error('Load error:', error);
+      alert(`Error retrieving available models: ${error.message}`);
+    }
+  }
 
   const handleRefineCharacter = async (prompt: string, model: string, apiKey: string) => {
     try {
@@ -214,6 +241,13 @@ const CharacterEditor: React.FC = () => {
             </div>
             <div className="form-group">
               <label htmlFor="model-provider">Model Provider</label>
+              <ModelProviderSelect
+                selected={openRouterSelectedModel || ''}
+                onChange={(value) => setOpenRouterSelectedModel(value)}
+                models={openRouterAvailableModels}
+              />
+              {/*
+              <label htmlFor="model-provider">Model Provider</label>
               <select
                 id="model-provider"
                 onChange={(e) => handleInputChange('modelProvider', e.target.value)}
@@ -221,6 +255,7 @@ const CharacterEditor: React.FC = () => {
               >
                 <option value="">Select a provider</option>
                 <option value="openai">OpenAI</option>
+                <option value="deepseek">DeepSeek</option>
                 <option value="eternalai">EternalAI</option>
                 <option value="anthropic">Anthropic</option>
                 <option value="grok">Grok</option>
@@ -239,7 +274,13 @@ const CharacterEditor: React.FC = () => {
                 <option value="gaianet">GaiaNet</option>
                 <option value="ali_bailian">Ali Bailian</option>
                 <option value="volengine">VolEngine</option>
+                {openRouterAvailableModels.map((model: OpenRouterModel, index: number) => (
+                  <option key={index} value="openrouter">
+                    {model.name} {model.pricing.completion === "0" && model.pricing.completion === "0" && model.pricing.image === "0" && model.pricing.request === "0" ? '[FREE]' : '[PAID]'}
+                  </option>
+                ))}
               </select>
+                */}
             </div>
             <div className="form-group">
               <label htmlFor="voice-model">Voice Model</label>
