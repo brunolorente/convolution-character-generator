@@ -1107,3 +1107,17 @@ gecko-coin-ticker-widget {
     }
   }
 }
+
+/* Gen char section */
+
+#generate-character-section {
+  .section-content {
+    .form-group {
+      .button-group {
+        display: flex;
+        justify-content: right;
+        margin-top: 1em;
+      }
+    }
+  }
+}

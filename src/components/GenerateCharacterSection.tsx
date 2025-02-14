@@ -92,7 +92,7 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
   };
 
   return (
-    <section className="section">
+    <section className="section" id="generate-character-section">
       <div className="section-header">
         <span>Generate Character</span>
         <button
@@ -200,7 +200,8 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
             ></textarea>
-            <div className="button-group">
+          </div>
+          <div className="button-group">
               <button
                 id="generate-from-prompt"
                 className="action-button generate-button"
@@ -217,7 +218,6 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
               >
                 <i className="fa-solid fa-wand-sparkles"></i>
               </button>
-            </div>
           </div>
           <div id="prompt-status" className="error">
             {status}
