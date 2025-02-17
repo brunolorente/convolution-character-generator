@@ -1,9 +1,10 @@
 // src/components/App.tsx
 import React, { useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from '../routes/AppRoutes';
 import { ApiKeyService } from '../services/apiKeyService';
-
 import TopFrame from './TopFrame';
-import CharacterEditor from './CharacterEditor';
+
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -14,14 +15,12 @@ const App: React.FC = () => {
       apiKeyService.updateApiKeyDisplay(apiKeyInputEl, apiKeyStatusEl);
     }
 
-    // Rastrear posición del mouse para tooltips
     const handleMouseMove = (e: MouseEvent) => {
       document.documentElement.style.setProperty('--mouse-x', `${e.clientX + 20}px`);
       document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     };
     document.addEventListener('mousemove', handleMouseMove);
 
-    // Manejar errores de extensiones
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       if (
         event.reason?.message?.includes('message port closed') ||
@@ -45,7 +44,6 @@ const App: React.FC = () => {
     };
     window.addEventListener('error', handleError, true);
 
-    // Cleanup cuando se desmonte <App />
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('unhandledrejection', handleUnhandledRejection);
@@ -54,10 +52,13 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <BrowserRouter>
+      {/* Header always visible */}
       <TopFrame />
-      <CharacterEditor />
-    </>
+
+      {/* Routes */}
+      <AppRoutes />
+    </BrowserRouter>
   );
 };
 
