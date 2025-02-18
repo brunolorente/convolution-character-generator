@@ -1,37 +1,104 @@
 // src/components/GenerateCharacterSection.tsx
 import React, { useEffect, useState } from 'react';
 import { enqueueEvent } from '../services/messageHandler';
-import { BootAgentEvent } from '../types/commEvents';
+import { BootAgentEvent, StopAgentEvent } from '../types/commEvents';
 import useMessageListener from '../hooks/useMessageListener';
+import { CharacterData } from '../types';
+import { useAgent } from '../hooks/useAgent';
+import { useNavigate } from 'react-router-dom';
 
 interface GenerateCharacterSectionProps {
+  userId: string,
+  agentId?: string,
+  characterData?: CharacterData,
+  llm_provider_name?: string,
+  llm_provider_model?: string,
+  llm_provider_api_key?: string,
 }
 
-const AgentControlsSection: React.FC<GenerateCharacterSectionProps> = () => {
+const AgentControlsSection: React.FC<GenerateCharacterSectionProps> = ({
+  userId,
+  agentId,
+  characterData,
+  llm_provider_name,
+  llm_provider_model,
+  llm_provider_api_key,
+}) => {
+  let navigate = useNavigate();
   const [agentStatus, setAgentStatus] = useState<boolean>(false);
   const [interval] = useState(5000); // Intervalo de escucha (en milisegundos)
-  const messages = useMessageListener('<FIXME>idUsuario 1</FIXME>', interval);
+  const [definition, setDefinition] = useState(characterData);
+  const messages = useMessageListener(userId, interval);
+  const { response, error, saveHandler, updateHandler } = useAgent();
 
   const startAgent = () => {
-    let eventBody: BootAgentEvent = {
-      action: "boot",
-      agentId: "<FIXME>agentId</FIXME>",
-      apiKey: "<FIXME>apiKey</FIXME>",
-      llmModel: "<FIXME>llmModel</FIXME>",
+    if (agentId && llm_provider_name && llm_provider_model && llm_provider_api_key) {
+      let eventBody: BootAgentEvent = {
+        action: "boot",
+        agentId: agentId,
+        apiKey: llm_provider_api_key,
+        llmModel: llm_provider_model,
+      }
+      enqueueEvent(eventBody, eventBody.action, userId, eventBody.agentId);
+      setAgentStatus(true) 
+    } else {
+      alert('faltan datos');
     }
-    enqueueEvent(eventBody, eventBody.action, "<FIXME>idUsuario 1</FIXME>", eventBody.agentId);
-    setAgentStatus(true)
   }
+
   const stopAgent = () => {
+    if (agentId) {
+      let eventBody: StopAgentEvent = {
+        action: "boot",
+        agentId: agentId,
+      }
+      enqueueEvent(eventBody, eventBody.action, "<FIXME>idUsuario 1</FIXME>", eventBody.agentId);
+      setAgentStatus(true) 
+    } else {
+      alert('faltan id agente');
+    }
     setAgentStatus(false)
   }
+
+  useEffect(() => {
+    setDefinition(characterData);
+  }, [characterData])
+
+  const saveAgent = () => {
+    if (userId && llm_provider_model && llm_provider_api_key && definition) {
+      saveHandler(userId, llm_provider_model, llm_provider_api_key, definition)
+    } else {
+      alert('faltan datos');
+    }
+    setAgentStatus(false)
+  }
+
+  const updateAgent = () => {
+    if (agentId && llm_provider_model && llm_provider_api_key && definition) {
+      updateHandler(agentId, llm_provider_model, llm_provider_api_key, definition)
+    } else {
+      alert('faltan datos');
+    }
+    setAgentStatus(false)
+  }
+
+  useEffect(() => {
+    if (response) {
+      alert(response.message);
+      navigate("/dashboard");
+    }
+    if (error) {
+      console.log(error);
+    }
+  }, 
+  [error, response]);
 
   useEffect(() => {
     console.log(messages);
   }, [messages])
 
   return (
-    <section className="section" id="generate-character-section">
+    <section className="section" id="generate-character-section" style={{alignSelf: 'flex-end', width: '50%'}}>
       <div className="section-header">
         <span>Agent controls</span>
         <button
@@ -45,17 +112,34 @@ const AgentControlsSection: React.FC<GenerateCharacterSectionProps> = () => {
         <div className="form-group">
             <span>{agentStatus ? 'on' : 'off'}</span>
         </div>
-        <div className="form-group">
-        {!agentStatus ? (
-          <button onClick={startAgent}>
-            <i className='fa-solid fa-play'></i>
-          </button>
+        {agentId ? (
+          <div className="form-group">
+          {!agentStatus && characterData && llm_provider_name && llm_provider_model && llm_provider_api_key && (
+            <button onClick={startAgent}>
+              Activar <i className='fa-solid fa-play'></i>
+            </button>
+          )}
+          {agentStatus && characterData && llm_provider_name && llm_provider_model && llm_provider_api_key && (
+            <button onClick={stopAgent}>
+              Pausar <i className='fa-solid fa-stop'></i>
+            </button>
+          )}
+          {characterData && llm_provider_name && llm_provider_model && llm_provider_api_key && (
+            <button onClick={updateAgent}>
+              Actualizar <i className='fa-solid fa-save'></i>
+            </button>
+          )}
+          </div>
         ) : (
-          <button onClick={stopAgent}>
-            <i className='fa-solid fa-stop'></i>
-          </button>
+          <div className="form-group">
+          {characterData && (
+            <button onClick={saveAgent}>
+              Guardar <i className='fa-solid fa-save'></i>
+            </button>
+          )}
+          </div>
         )}
-        </div>
+
       </div>
     </section>
   );

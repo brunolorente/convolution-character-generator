@@ -6,6 +6,9 @@ import LandingPage from '../pages/LandingPage';
 import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 import PrivateRoute from './PrivateRoute';
+import EditCharacterPage from '../pages/character/EditCharacterPAge';
+import AgentDetailPage from '../pages/character/CharacterDetailPage';
+import CreateCharacterPage from '../pages/character/CreateCharacterPage';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -20,6 +23,30 @@ const AppRoutes: React.FC = () => {
         element={
           <PrivateRoute>
             <DashboardPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/agent/:id"
+        element={
+          <PrivateRoute>
+            <AgentDetailPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/agent/character/:id"
+        element={
+          <PrivateRoute>
+            <EditCharacterPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/agent/character"
+        element={
+          <PrivateRoute>
+            <CreateCharacterPage />
           </PrivateRoute>
         }
       />

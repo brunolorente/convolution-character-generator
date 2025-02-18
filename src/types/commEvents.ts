@@ -7,7 +7,7 @@ export interface BootAgentEvent {
 
 export interface StopAgentEvent {
     action: AgentRuntimeAction,
-    llmModel: string,
+    agentId: string,
 }
 
 export type AgentRuntimeAction = 'boot' | 'stop'

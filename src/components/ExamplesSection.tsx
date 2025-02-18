@@ -108,7 +108,7 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
             </button>
           </div>
           <div id="message-examples-container">
-            {messageExamples.map((example, index) => (
+            {messageExamples?.map((example, index) => (
               <div key={index} className="message-example">
                 <div className="message-pair">
                   <textarea

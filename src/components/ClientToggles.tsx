@@ -20,7 +20,7 @@ const ClientToggles: React.FC<ClientTogglesProps> = ({ availableClients, selecte
       {availableClients.map(client => (
         <button
           key={client}
-          className={`client-toggle ${selectedClients.includes(client) ? 'active' : ''}`}
+          className={`client-toggle ${selectedClients?.includes(client) ? 'active' : ''}`}
           onClick={() => toggleClient(client)}
           data-client={client}
         >

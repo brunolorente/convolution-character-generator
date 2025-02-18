@@ -184,7 +184,7 @@ const KnowledgeProcessingSection: React.FC<KnowledgeProcessingSectionProps> = ({
             </button>
           </div>
           <div id="knowledge-entries" className="knowledge-entries">
-            {knowledge.map((entry, index) => (
+            {knowledge?.map((entry, index) => (
               <div key={index} className="knowledge-entry">
                 <span className="entry-number">{index + 1}.</span>
                 <input

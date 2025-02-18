@@ -3,7 +3,6 @@ import React from 'react';
 import LoadCharacterSection from './LoadCharacterSection';
 import GenerateCharacterSection from './GenerateCharacterSection';
 import { BackupListItem } from '../types';
-import AgentControlsSection from './AgentControlsSection';
 
 interface SidebarProps {
   onLoadCharacter: (character: any) => void; // Reemplaza "any" por tu tipo CharacterData si lo tienes definido
@@ -28,7 +27,6 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <div className="sidebar">
-      <AgentControlsSection/>
 
       <LoadCharacterSection
         onLoadCharacter={onLoadCharacter}

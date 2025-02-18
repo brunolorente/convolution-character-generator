@@ -10,6 +10,8 @@ import CharacterResultSection from './CharacterResultSection';
 import { CharacterData, MessageExample, BackupListItem, OpenRouterModel } from '../types';
 import ClientToggles from './ClientToggles';
 import ModelProviderSelect from './inputs/ModelProviderSelect';
+import AgentControlsSection from './AgentControlsSection';
+import { API_KEY_STORAGE_KEY } from '../constants';
 
 
 const initialCharacter: CharacterData = {
@@ -29,11 +31,20 @@ const initialCharacter: CharacterData = {
   people: [],
 };
 
-const CharacterEditor: React.FC = () => {
-  const [character, setCharacter] = useState<CharacterData>(initialCharacter);
+interface CharacterEditorProps {
+  userId: string,
+  characterData?: CharacterData,
+  agentId?: string,
+  selectedModel?: string,
+}
+
+const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentId, selectedModel, userId }) => {
+  const [character, setCharacter] = useState<CharacterData>(characterData || initialCharacter);
   const [backups, setBackups] = useState<BackupListItem[]>([]);
   const [openRouterAvailableModels, setOpenRouterAvailableModels] = useState<OpenRouterModel[]>([]);
-  const [openRouterSelectedModel, setOpenRouterSelectedModel] = useState<string>();
+  const [openRouterSelectedModel, setOpenRouterSelectedModel] = useState<string|undefined>(selectedModel ?? undefined);
+  const [refinementPrompt, setRefinementPrompt] = useState<string>();
+  const [generationPrompt, setGenerationPrompt] = useState<string>();
 
   useEffect(() => {
     handleGetAvailableModels();
@@ -132,6 +143,7 @@ const CharacterEditor: React.FC = () => {
       const data = await response.json();
       data.character.people = [];
       setCharacter(data.character);
+      setGenerationPrompt(prompt);
     } catch (error: any) {
       console.error('Generation error:', error);
       alert(`Error generating character: ${error.message}`);
@@ -169,6 +181,7 @@ const CharacterEditor: React.FC = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      setRefinementPrompt(prompt);
       setCharacter(data.character);
     } catch (error: any) {
       console.error('Refinement error:', error);
@@ -289,7 +302,7 @@ const CharacterEditor: React.FC = () => {
                 id="voice-model"
                 placeholder="Voice synthesis model identifier for text-to-speech"
                 onChange={(e) => updateNestedField('settings.voice.model', e.target.value)}
-                value={character.settings.voice.model}
+                value={character.settings?.voice?.model}
               />
             </div>
           </div>
@@ -317,6 +330,8 @@ const CharacterEditor: React.FC = () => {
           onPeopleChange={updatePeople}
         />
         <CharacterResultSection character={character} />
+
+        <AgentControlsSection userId={userId} characterData={character} agentId={agentId}  llm_provider_name={'openrouter'} llm_provider_model={openRouterSelectedModel} llm_provider_api_key={localStorage.getItem(API_KEY_STORAGE_KEY)!} />
       </div>
     </div>
   );

@@ -70,7 +70,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
             <SplitTextArea
               id="style-all"
               placeholder="Describe how the character communicates in general..."
-              value={character.style.all}
+              value={character.style?.all}
               onChange={(newValue: string[]) => handleInputChange('style.all', newValue)}
               splitOnBlur={true}
             />
@@ -80,7 +80,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
             <SplitTextArea
               id="style-chat"
               placeholder="Describe chat-specific mannerisms..."
-              value={character.style.chat}
+              value={character.style?.chat}
               onChange={(newValue: string[]) => handleInputChange('style.chat', newValue)}
               splitOnBlur={true}
             />
@@ -90,7 +90,7 @@ const CharacterDetailsSection: React.FC<CharacterDetailsSectionProps> = ({
             <SplitTextArea
               id="style-post"
               placeholder="Describe how the character writes posts..."
-              value={character.style.post}
+              value={character.style?.post}
               onChange={(newValue: string[]) => handleInputChange('style.post', newValue)}
               splitOnBlur={true}
             />

@@ -1,8 +1,7 @@
 // src/routes/PrivateRoute.tsx
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-// Ejemplo: un context de Auth
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 type PrivateRouteProps = {
   children: React.ReactNode;

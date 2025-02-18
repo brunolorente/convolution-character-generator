@@ -18,11 +18,11 @@ const SplitTextArea: React.FC<SplitTextAreaProps> = ({
   splitOnBlur = true,
 }) => {
   // Estado local para mantener el texto en formato de cadena
-  const [text, setText] = useState<string>(value.join('\n'));
+  const [text, setText] = useState<string>(value?.join('\n'));
 
   // Actualiza el estado local si el valor en props cambia (por ejemplo, al cargar un backup)
   useEffect(() => {
-    setText(value.join('\n'));
+    setText(value?.join('\n'));
   }, [value]);
 
   // En onBlur, se transforma el texto (si corresponde) y se notifica al padre

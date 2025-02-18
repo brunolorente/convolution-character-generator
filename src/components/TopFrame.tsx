@@ -2,6 +2,7 @@
 import React from 'react';
 import convolutionLogo from '../assets/images/convolution-square.svg';
 import { useTheme } from '../hooks/useTheme';
+import { useAuth } from '../hooks/useAuth';
 
 const TopFrame: React.FC = () => {
   const [theme, toggleTheme] = useTheme();
@@ -34,8 +35,41 @@ function SiteBranding() {
 }
 
 function ExternalLinks({ toggleTheme, theme }: { toggleTheme: () => void, theme: 'light' | 'dark' }) {
+  const { isAuthenticated, logout } = useAuth(); 
   return (
     <div className="external-links">
+      <a
+        href="/dashboard"
+        title="Convolution Main Repository"
+        rel="noopener"
+      >
+        Dashboard
+      </a>
+      <a
+        href="/agent/character"
+        title="Convolution Main Repository"
+        rel="noopener"
+      >
+        Create agent
+      </a>
+      {isAuthenticated ? (
+        <a
+          href="#"
+          title="Convolution Main Repository"
+          rel="noopener"
+          onClick={logout}
+        >
+          Logout
+        </a>
+      ) : (
+        <a
+          href="/login"
+          title="Convolution Main Repository"
+          rel="noopener"
+        >
+          Login
+        </a>
+      )}
       <a
         href="https://github.com/ConvolutionSOL"
         title="Convolution Main Repository"

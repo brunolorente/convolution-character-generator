@@ -25,6 +25,52 @@ export interface CharacterData {
   people: string[];
 }
 
+// Represents pagination info returned by the API
+export interface Pagination {
+  current_page: number;
+  total_pages: number;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+}
+
+// Represents the agent (character) object
+export interface Agent {
+  id: string;
+  definition: CharacterData; // This is the parsed version of 'definition' from the API
+  auto_generation_prompt?: string;
+  auto_enhancement_prompt?: string;
+  llm_provider_settings: LlmProviderSettings;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Represents the LLM provider settings
+export interface LlmProviderSettings {
+  id: string;
+  llm_provider_name: string;
+  llm_provider_model: string;
+  llm_provider_api_key: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Response for fetching a list of characters (with pagination)
+export interface CharactersResponse {
+  current_page: number;
+  data: Agent[];
+  total: number;
+  last_page: number;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+}
+
+// Response for fetching a single character
+export interface CharacterResponse {
+  character: Agent;
+}
+
+
 export interface MessageExample {
   user: string;
   content: {
