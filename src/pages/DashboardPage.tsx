@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 const DashboardPage: React.FC = () => {
   const { token, logout } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
-  const { characters, loading, error, pagination, refetch } = useCharacters(currentPage);
+  const { characters, loading, error, pagination } = useCharacters(currentPage);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

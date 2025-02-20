@@ -5,12 +5,7 @@ import { useCharacter } from '../../hooks/useCharacter';
 
 const CharacterDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Get the character ID from URL params
-  const { character, loading, error, refetch } = useCharacter(id!);
-/*
-  useEffect(() => {
-    refetch();
-  }, [])
-  */
+  const { character, loading, error } = useCharacter(id!);
 
   if (loading) return <p>Loading character...</p>;
   if (error) return <p>Error: {error}</p>;

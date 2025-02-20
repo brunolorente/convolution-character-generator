@@ -1,6 +1,7 @@
 // src/components/characterEditor/ExamplesSection.tsx
 import React from 'react';
 import { MessageExample } from '../../types';
+import SplitTextArea from '../inputs/SplitTextArea';
 
 interface ExamplesSectionProps {
   messageExamples: MessageExample[][];
@@ -9,24 +10,6 @@ interface ExamplesSectionProps {
   onMessageExamplesChange: (examples: MessageExample[][]) => void;
   onPostExamplesChange: (posts: string[]) => void;
 }
-
-/**
- * Función auxiliar para dividir el contenido de los post examples por retorno de carro.
- * Separamos por líneas (soportando \n y \r\n), limpiamos espacios y, opcionalmente, se le agrega un punto final
- * a cada línea si no termina en ., ! o ?.
- */
-const splitPostExamples = (text: string): string[] => {
-  if (!text || typeof text !== 'string' || text.trim() === '') return [];
-  return text
-    .split(/\r?\n/)
-    .map(line => line.trim())
-    .filter(line => line.length > 0)
-    .map(line => {
-      // Si deseas asegurarte de que cada línea termina en puntuación, descomenta la siguiente línea:
-      // return /[.!?]$/.test(line) ? line : line + '.';
-      return line;
-    });
-};
 
 const ExamplesSection: React.FC<ExamplesSectionProps> = ({
   messageExamples,
@@ -74,12 +57,6 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
       return example;
     });
     onMessageExamplesChange(updated);
-  };
-
-  // Actualiza los post examples usando la función auxiliar splitPostExamples
-  const handlePostExamplesChange = (value: string) => {
-    const newPosts = splitPostExamples(value);
-    onPostExamplesChange(newPosts);
   };
 
   return (
@@ -145,12 +122,11 @@ const ExamplesSection: React.FC<ExamplesSectionProps> = ({
         {/* Post Examples */}
         <div className="form-group">
           <label htmlFor="post-examples">Post Examples</label>
-          <textarea
-            id="post-examples"
+          <SplitTextArea
             placeholder="Write example posts that demonstrate the character's writing style. Include different types of content they might create. Write one complete post per line."
-            spellCheck={false}
-            onChange={(e) => handlePostExamplesChange(e.target.value)}
-          ></textarea>
+            value={postExamples} 
+            onChange={(val) => onPostExamplesChange(val)}
+          />
         </div>
       </div>
     </section>

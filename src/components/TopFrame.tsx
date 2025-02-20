@@ -34,7 +34,7 @@ function SiteBranding() {
   );
 }
 
-function ExternalLinks({ toggleTheme, theme }: { toggleTheme: () => void, theme: 'light' | 'dark' }) {
+function ExternalLinks({ toggleTheme }: { toggleTheme: () => void, theme: 'light' | 'dark' }) {
   const { isAuthenticated, logout } = useAuth(); 
   return (
     <div className="external-links">

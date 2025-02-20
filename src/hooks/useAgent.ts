@@ -1,7 +1,7 @@
 // src/hooks/useCharacter.ts
 import { useState } from 'react';
 import api from '../services/apiClient';
-import { Agent, CharacterData } from '../types';
+import { CharacterData } from '../types';
 
 export function useAgent() {
   const [response, setResponse] = useState<any | null>(null);
@@ -21,7 +21,6 @@ export function useAgent() {
       }
       const { data } = await api.post('/character', payload);
       setResponse(data);
-      console.log(data);
     } catch (err) {
       setError('Failed to fetch character details');
     } finally {

@@ -1,7 +1,7 @@
 // src/hooks/useCharacter.ts
 import { useState, useEffect } from 'react';
 import api from '../services/apiClient';
-import { Agent, CharacterData } from '../types';
+import { Agent } from '../types';
 
 export function useCharacter(id: string) {
   const [character, setCharacter] = useState<Agent | null>(null);
