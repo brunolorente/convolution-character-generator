@@ -168,7 +168,7 @@ app.post('/api/generate-character', async (req, res) => {
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
-                'HTTP-Referer': process.env.APP_URL || 'http://localhost:4000',
+                'HTTP-Referer': process.env.APP_URL || 'https://app.convolution.agency',
                 'X-Title': 'Eliza Character Generator'
             },
             body: JSON.stringify({
@@ -352,7 +352,6 @@ Generate a complete character profile as a single JSON object following the exac
         }
 
         const data = await response.json();
-        console.log(data.choices[0]);
 
         const generatedContent = data.choices[0].message.content;
 
@@ -524,7 +523,7 @@ app.post('/api/refine-character', async (req, res) => {
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
-                'HTTP-Referer': process.env.APP_URL || 'http://localhost:4000',
+                'HTTP-Referer': process.env.APP_URL || 'https://app.convolution.agency',
                 'X-Title': 'Eliza Character Generator'
             },
             body: JSON.stringify({

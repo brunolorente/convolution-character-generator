@@ -1,7 +1,7 @@
 // src/components/Sidebar.tsx
 import React from 'react';
-import LoadCharacterSection from './LoadCharacterSection';
-import GenerateCharacterSection from './GenerateCharacterSection';
+import LoadCharacterSection from './characterEditor/LoadCharacterSection';
+import GenerateCharacterSection from './characterEditor/GenerateCharacterSection';
 import { BackupListItem } from '../types';
 
 interface SidebarProps {

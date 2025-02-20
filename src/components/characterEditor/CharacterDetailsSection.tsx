@@ -1,7 +1,7 @@
 // src/components/CharacterDetailsSection.tsx
 import React from 'react';
-import { CharacterData } from '../types';
-import SplitTextArea from './inputs/SplitTextArea';
+import { CharacterData } from '../../types';
+import SplitTextArea from '../inputs/SplitTextArea';
 
 interface CharacterDetailsSectionProps {
   character: CharacterData;

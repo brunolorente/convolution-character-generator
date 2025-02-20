@@ -1,24 +1,32 @@
 // src/components/CharacterEditor.tsx
 import React, { useEffect, useState } from 'react';
 
-import Sidebar from './Sidebar';
+import Sidebar from '../Sidebar';
 import CharacterDetailsSection from './CharacterDetailsSection';
 import KnowledgeProcessingSection from './KnowledgeProcessingSection';
 import ExamplesSection from './ExamplesSection';
 import AdjectivesAndPeopleSection from './AdjectivesAndPeopleSection';
 import CharacterResultSection from './CharacterResultSection';
-import { CharacterData, MessageExample, BackupListItem, OpenRouterModel } from '../types';
+import { CharacterData, MessageExample, BackupListItem, OpenRouterModel } from '../../types';
 import ClientToggles from './ClientToggles';
-import ModelProviderSelect from './inputs/ModelProviderSelect';
+import ModelProviderSelect from '../inputs/ModelProviderSelect';
 import AgentControlsSection from './AgentControlsSection';
-import { API_KEY_STORAGE_KEY } from '../constants';
+import { API_KEY_STORAGE_KEY } from '../../constants';
 
 
 const initialCharacter: CharacterData = {
   name: '',
   clients: [],
   modelProvider: 'openrouter',
-  settings: { secrets: {}, voice: { model: '' } },
+  settings: { 
+    secrets: { // TODO: Remove this
+      "OPENROUTER_API_KEY": "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",
+      "OPENROUTER_MODEL": "meta-llama/llama-3.3-70b-instruct:free",
+      "TELEGRAM_BOT_TOKEN": "7300067038:AAE0yiWZLAKau-ZmGBS8dvtSyM1-kTVjqaE"
+    }, 
+    voice: { 
+      model: '' } 
+  },
   plugins: [],
   bio: [],
   lore: [],
@@ -49,6 +57,19 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
   useEffect(() => {
     handleGetAvailableModels();
   }, [])
+
+  useEffect(() => {
+    // TODO: Remove this
+    let currentCharacter = character
+    currentCharacter.modelProvider = "openrouter"
+    currentCharacter.settings.secrets = {
+      "OPENROUTER_API_KEY": "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",
+      "OPENROUTER_MODEL": "meta-llama/llama-3.3-70b-instruct:free",
+      "TELEGRAM_BOT_TOKEN": "7300067038:AAE0yiWZLAKau-ZmGBS8dvtSyM1-kTVjqaE"
+    }
+    setCharacter(currentCharacter);
+  }, 
+  []);
 
   // Handler para actualizar campos simples o anidados
   const handleInputChange = (field: string, value: any) => {

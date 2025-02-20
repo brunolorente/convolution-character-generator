@@ -1,6 +1,6 @@
 // CharacterResultSection.tsx
 import React, { useState } from 'react';
-import { CharacterData } from '../types';
+import { CharacterData } from '../../types';
 
 interface CharacterResultSectionProps {
   character: CharacterData;

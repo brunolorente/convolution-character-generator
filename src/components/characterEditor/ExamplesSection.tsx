@@ -1,6 +1,6 @@
 // src/components/ExamplesSection.tsx
 import React from 'react';
-import { MessageExample } from '../types';
+import { MessageExample } from '../../types';
 
 interface ExamplesSectionProps {
   messageExamples: MessageExample[][];

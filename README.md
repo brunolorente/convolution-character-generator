@@ -1,6 +1,6 @@
-# Eliza Character Generator
+# Convolution Manager UI
 
-A comprehensive web-based tool for creating, managing, and customizing AI character definitions. This tool integrates with various AI models through OpenRouter API and provides extensive knowledge integration capabilities.
+A comprehensive web-based tool for creating, managing, and customizing AI agents with their character definitions. This tool integrates with various AI models through OpenRouter API and provides extensive knowledge integration capabilities.
 
 ## Features
 
@@ -94,7 +94,7 @@ A comprehensive web-based tool for creating, managing, and customizing AI charac
 1. Clone the repository:
 ```bash
 git clone [repository-url]
-cd eliza-character-generator
+cd convolution-manager-ui
 ```
 
 2. Install dependencies:
@@ -107,7 +107,7 @@ npm install
 npm start
 ```
 
-4. Access the application at http://localhost:4001
+4. Access the application at http://localhost:5173
 
 ## Requirements
 
@@ -167,7 +167,6 @@ npm start
 2. **Export**:
    - Generate final JSON
    - Download character file
-   - Import into Eliza AI system
 
 ## Contributing
 
@@ -177,21 +176,13 @@ Contributions are welcome! Please read our contributing guidelines before submit
 
 This project is licensed under the [MIT License](LICENSE).
 
-## Credits
-
 ### Core Team
-- Eliza Created by [ai16z](https://github.com/ai16z)
-- Tool Development by [HowieDuhzit](https://github.com/HowieDuhzit)
 
-### Shoutouts
-- [@lalalune](https://github.com/lalalune)
-- [@fabianhug](https://github.com/fabianhug)
-- [@shakkernerd](https://github.com/shakkernerd)
-- [@madjin](https://github.com/madjin)
-- [@jb0gie](https://github.com/jb0gie)
+- Convolution Created by [ConvolutionSOL](https://github.com/ConvolutionSOL)
+- Tool Development by [bruno.sh](https://github.com/brunolorente)
 
 ## Support
 
 For support, please:
-1. Check the [GitHub Issues](https://github.com/HowieDuhzit/Eliza-Character-Gen/issues)
-2. Join the [ai16z DAO](https://www.daos.fun/HeLp6NuQkmYB4pYWo2zYs22mESHXPQYzXbB8n4V98jwC)
+1. Check the [GitHub Issues](https://github.com/brunolorente/convolution-character-generator/issues)
+2. Join the [Convolution DAO](https://www.daos.fun/)

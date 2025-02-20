@@ -6,7 +6,7 @@ import LandingPage from '../pages/LandingPage';
 import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 import PrivateRoute from './PrivateRoute';
-import EditCharacterPage from '../pages/character/EditCharacterPAge';
+import EditCharacterPage from '../pages/character/EditCharacterPage';
 import AgentDetailPage from '../pages/character/CharacterDetailPage';
 import CreateCharacterPage from '../pages/character/CreateCharacterPage';
 

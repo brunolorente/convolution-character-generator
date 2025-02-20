@@ -1,6 +1,6 @@
 // src/pages/EditCharacterPage.tsx
 import React, { useEffect } from 'react';
-import CharacterEditor from '../../components/CharacterEditor';
+import CharacterEditor from '../../components/characterEditor/CharacterEditor';
 import { useAuth } from '../../hooks/useAuth';
 
 const CreateCharacterPage: React.FC = () => {

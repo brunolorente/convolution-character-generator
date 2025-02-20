@@ -1,5 +1,5 @@
 {
-  "name": "eliza-character-generator",
+  "name": "convolution-manager-ui",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",

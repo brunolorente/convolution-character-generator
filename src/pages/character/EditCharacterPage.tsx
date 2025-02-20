@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useCharacter } from '../../hooks/useCharacter';
 import { useParams } from 'react-router-dom';
-import CharacterEditor from '../../components/CharacterEditor';
+import CharacterEditor from '../../components/characterEditor/CharacterEditor';
 import { useAuth } from '../../hooks/useAuth';
 
 const EditCharacterPage: React.FC = () => {

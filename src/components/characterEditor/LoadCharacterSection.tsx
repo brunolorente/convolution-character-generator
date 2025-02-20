@@ -1,6 +1,6 @@
 // src/components/LoadCharacterSection.tsx
 import React, { useRef, useState } from 'react';
-import { BackupListItem } from '../types';
+import { BackupListItem } from '../../types';
 
 interface LoadCharacterSectionProps {
   onLoadCharacter: (character: any) => void; // Idealmente usarías el tipo CharacterData

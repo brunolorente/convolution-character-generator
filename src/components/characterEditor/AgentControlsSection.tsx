@@ -1,10 +1,10 @@
 // src/components/GenerateCharacterSection.tsx
 import React, { useEffect, useState } from 'react';
-import { enqueueEvent } from '../services/messageHandler';
-import { BootAgentEvent, StopAgentEvent } from '../types/commEvents';
-import useMessageListener from '../hooks/useMessageListener';
-import { CharacterData } from '../types';
-import { useAgent } from '../hooks/useAgent';
+import { enqueueEvent } from '../../services/messageHandler';
+import { BootAgentEvent, StopAgentEvent } from '../../types/commEvents';
+import useMessageListener from '../../hooks/useMessageListener';
+import { CharacterData } from '../../types';
+import { useAgent } from '../../hooks/useAgent';
 import { useNavigate } from 'react-router-dom';
 
 interface GenerateCharacterSectionProps {
