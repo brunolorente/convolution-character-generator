@@ -1,4 +1,4 @@
-// src/components/CharacterEditor.tsx
+// src/components/characterEditor/CharacterEditor.tsx
 import React, { useEffect, useState } from 'react';
 
 import Sidebar from '../Sidebar';
@@ -11,7 +11,7 @@ import { CharacterData, MessageExample, BackupListItem, OpenRouterModel } from '
 import ClientToggles from './ClientToggles';
 import ModelProviderSelect from '../inputs/ModelProviderSelect';
 import AgentControlsSection from './AgentControlsSection';
-import { API_KEY_STORAGE_KEY } from '../../constants';
+import { ApiKeyService } from '../../services/apiKeyService';
 
 
 const initialCharacter: CharacterData = {
@@ -19,11 +19,7 @@ const initialCharacter: CharacterData = {
   clients: [],
   modelProvider: 'openrouter',
   settings: { 
-    secrets: { // TODO: Remove this
-      "OPENROUTER_API_KEY": "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",
-      "OPENROUTER_MODEL": "meta-llama/llama-3.3-70b-instruct:free",
-      "TELEGRAM_BOT_TOKEN": "7300067038:AAE0yiWZLAKau-ZmGBS8dvtSyM1-kTVjqaE"
-    }, 
+    secrets: {}, 
     voice: { 
       model: '' } 
   },
@@ -46,30 +42,28 @@ interface CharacterEditorProps {
   selectedModel?: string,
 }
 
-const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentId, selectedModel, userId }) => {
+const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentId, userId }) => {
+  const apiKeyService = ApiKeyService.getInstance();
+
   const [character, setCharacter] = useState<CharacterData>(characterData || initialCharacter);
   const [backups, setBackups] = useState<BackupListItem[]>([]);
   const [openRouterAvailableModels, setOpenRouterAvailableModels] = useState<OpenRouterModel[]>([]);
-  const [openRouterSelectedModel, setOpenRouterSelectedModel] = useState<string|undefined>(selectedModel ?? undefined);
-  const [refinementPrompt, setRefinementPrompt] = useState<string>();
-  const [generationPrompt, setGenerationPrompt] = useState<string>();
+
+  const [, setRefinementPrompt] = useState<string>();
+  const [, setGenerationPrompt] = useState<string>();
+
+  const [showTelegramConfigForm, setShowTelegramConfigForm] = useState<boolean>(false);
+  const [showTwitterConfigForm, setShowTwitterConfigForm] = useState<boolean>(false);
 
   useEffect(() => {
     handleGetAvailableModels();
+    handleInputChange('settings.secrets.OPENROUTER_API_KEY', apiKeyService.getApiKey());
   }, [])
 
   useEffect(() => {
-    // TODO: Remove this
-    let currentCharacter = character
-    currentCharacter.modelProvider = "openrouter"
-    currentCharacter.settings.secrets = {
-      "OPENROUTER_API_KEY": "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",
-      "OPENROUTER_MODEL": "meta-llama/llama-3.3-70b-instruct:free",
-      "TELEGRAM_BOT_TOKEN": "7300067038:AAE0yiWZLAKau-ZmGBS8dvtSyM1-kTVjqaE"
-    }
-    setCharacter(currentCharacter);
-  }, 
-  []);
+      character.clients.includes('telegram') ? setShowTelegramConfigForm(true) : setShowTelegramConfigForm(false);
+      character.clients.includes('twitter') ? setShowTwitterConfigForm(true) : setShowTwitterConfigForm(false);
+  }, [character.clients]);
 
   // Handler para actualizar campos simples o anidados
   const handleInputChange = (field: string, value: any) => {
@@ -263,6 +257,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
                 value={character.name}
               />
             </div>
+
             <div className="form-group">
               <label>Available Clients</label>
               <ClientToggles
@@ -273,11 +268,61 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
                 }
               />
             </div>
+
+            {showTelegramConfigForm && (
+              <div className="form-group">
+                <label htmlFor="character-name">Telegram bot token</label>
+                <input
+                  type="text"
+                  placeholder="Your Telegram's bot ID"
+                  onChange={(e) => handleInputChange('settings.secrets.TELEGRAM_BOT_TOKEN', e.target.value)}
+                  value={character.settings?.secrets?.TELEGRAM_BOT_TOKEN}
+                />
+                <small>required</small>
+              </div>
+            )}
+
+            {showTwitterConfigForm && (
+              <>
+              <div className="form-group">
+                <label htmlFor="character-name">X account handler (without @)</label>
+                <input
+                  type="text"
+                  placeholder="Your X handler here"
+                  onChange={(e) => handleInputChange('settings.secrets.TWITTER_USERNAME', e.target.value)}
+                  value={character.settings?.secrets?.TWITTER_USERNAME}
+                />
+                <small>required</small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="character-name">X account password</label>
+                <input
+                  type="password"
+                  onChange={(e) => handleInputChange('settings.secrets.TWITTER_PASSWORD', e.target.value)}
+                  value={character.settings?.secrets?.TWITTER_PASSWORD}
+                />
+                <small>required</small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="character-name">X (formerly Twitter) email</label>
+                <input
+                  type="text"
+                  placeholder="Your X mail here"
+                  onChange={(e) => handleInputChange('settings.secrets.TWITTER_EMAIL', e.target.value)}
+                  value={character.settings?.secrets?.TWITTER_EMAIL}
+                />
+                <small>required</small>
+              </div>
+              </>
+            )}
+
             <div className="form-group">
               <label htmlFor="model-provider">Model Provider</label>
               <ModelProviderSelect
-                selected={openRouterSelectedModel || ''}
-                onChange={(value) => setOpenRouterSelectedModel(value)}
+                selected={character.settings.secrets.OPENROUTER_MODEL || ''}
+                onChange={(value) => handleInputChange('settings.secrets.OPENROUTER_MODEL', value)}
                 models={openRouterAvailableModels}
               />
               {/*
@@ -316,6 +361,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
               </select>
                 */}
             </div>
+
             <div className="form-group">
               <label htmlFor="voice-model">Voice Model</label>
               <input
@@ -352,7 +398,7 @@ const CharacterEditor: React.FC<CharacterEditorProps> = ({ characterData, agentI
         />
         <CharacterResultSection character={character} />
 
-        <AgentControlsSection userId={userId} characterData={character} agentId={agentId}  llm_provider_name={'openrouter'} llm_provider_model={openRouterSelectedModel} llm_provider_api_key={localStorage.getItem(API_KEY_STORAGE_KEY)!} />
+        <AgentControlsSection userId={userId} characterData={character} agentId={agentId}  llm_provider_name={'openrouter'} llm_provider_model={character.settings.secrets?.OPENROUTER_MODEL} llm_provider_api_key={apiKeyService.getApiKey()!} />
       </div>
     </div>
   );

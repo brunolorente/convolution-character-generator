@@ -1,4 +1,4 @@
-// src/components/GenerateCharacterSection.tsx
+// src/components/characterEditor/GenerateCharacterSection.tsx
 import React, { useEffect, useState } from 'react';
 import { enqueueEvent } from '../../services/messageHandler';
 import { BootAgentEvent, StopAgentEvent } from '../../types/commEvents';

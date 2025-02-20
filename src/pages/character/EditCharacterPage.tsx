@@ -32,7 +32,7 @@ const EditCharacterPage: React.FC = () => {
 
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
-      {character && <CharacterEditor characterData={character?.definition} agentId={character?.id} selectedModel={character.llm_provider_settings?.llm_provider_model} userId={userProfile.id} />}
+      {character && <CharacterEditor characterData={character?.definition} agentId={character?.id} userId={userProfile.id} />}
     </div>
   );
 };

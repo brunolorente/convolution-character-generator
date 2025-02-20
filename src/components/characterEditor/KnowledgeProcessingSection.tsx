@@ -1,4 +1,4 @@
-// src/components/KnowledgeProcessingSection.tsx
+// src/components/characterEditor/KnowledgeProcessingSection.tsx
 import React, { useState, useRef } from 'react';
 
 interface KnowledgeProcessingSectionProps {

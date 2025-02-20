@@ -1,12 +1,11 @@
-// src/components/GenerateCharacterSection.tsx
+// src/components/characterEditor/GenerateCharacterSection.tsx
 import React, { useState, useEffect } from 'react';
+import { ApiKeyService } from '../../services/apiKeyService';
 
 interface GenerateCharacterSectionProps {
   onGenerateCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
   onRefineCharacter: (prompt: string, model: string, apiKey: string) => Promise<void>;
 }
-
-const API_KEY_STORAGE_KEY = 'openrouter_api_key';
 
 const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
   onGenerateCharacter,
@@ -18,14 +17,17 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
   const [prompt, setPrompt] = useState<string>('');
   const [status, setStatus] = useState<string>('');
 
-  // Al montar el componente, comprobamos si hay API key guardada en localStorage
+  // Instancia del servicio
+  const apiKeyService = ApiKeyService.getInstance();
+
+  // Al montar, comprobamos si hay API key guardada
   useEffect(() => {
-    const storedKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+    const storedKey = apiKeyService.getApiKey();
     if (storedKey) {
       setSavedApiKey(storedKey);
       setApiKey(storedKey); // opcional, para prellenar el input
     }
-  }, []);
+  }, [apiKeyService]);
 
   const handleSaveApiKey = () => {
     const trimmedKey = apiKey.trim();
@@ -33,13 +35,13 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
       setStatus('Please enter a valid API key');
       return;
     }
-    localStorage.setItem(API_KEY_STORAGE_KEY, trimmedKey);
+    apiKeyService.saveApiKey(trimmedKey);
     setSavedApiKey(trimmedKey);
     setStatus('API key saved successfully');
   };
 
   const handleRemoveApiKey = () => {
-    localStorage.removeItem(API_KEY_STORAGE_KEY);
+    apiKeyService.removeApiKey();
     setSavedApiKey(null);
     setApiKey('');
     setStatus('API key removed');
@@ -103,6 +105,7 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
         </button>
       </div>
       <div className="section-content">
+        {/* Selección de modelo */}
         <div className="form-group">
           <label htmlFor="model-select">AI Model</label>
           <select
@@ -157,6 +160,8 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
             </optgroup>
           </select>
         </div>
+
+        {/* Gestión de la API Key */}
         <div className="form-group">
           <label htmlFor="api-key">OpenRouter API Key</label>
           {savedApiKey ? (
@@ -191,6 +196,8 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
             </div>
           )}
         </div>
+
+        {/* Descripción (prompt) y botones de generación/refinamiento */}
         <div className="form-group">
           <label htmlFor="character-prompt">Character Description</label>
           <div className="input-group">
@@ -202,22 +209,22 @@ const GenerateCharacterSection: React.FC<GenerateCharacterSectionProps> = ({
             ></textarea>
           </div>
           <div className="button-group">
-              <button
-                id="generate-from-prompt"
-                className="action-button generate-button"
-                title="Generate from Prompt"
-                onClick={handleGenerate}
-              >
-                <i className="fa-solid fa-bolt"></i>
-              </button>
-              <button
-                id="refine-character"
-                className="action-button generate-button"
-                title="Refine existing character"
-                onClick={handleRefine}
-              >
-                <i className="fa-solid fa-wand-sparkles"></i>
-              </button>
+            <button
+              id="generate-from-prompt"
+              className="action-button generate-button"
+              title="Generate from Prompt"
+              onClick={handleGenerate}
+            >
+              <i className="fa-solid fa-bolt"></i>
+            </button>
+            <button
+              id="refine-character"
+              className="action-button generate-button"
+              title="Refine existing character"
+              onClick={handleRefine}
+            >
+              <i className="fa-solid fa-wand-sparkles"></i>
+            </button>
           </div>
           <div id="prompt-status" className="error">
             {status}

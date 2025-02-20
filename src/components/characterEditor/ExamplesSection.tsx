@@ -1,4 +1,4 @@
-// src/components/ExamplesSection.tsx
+// src/components/characterEditor/ExamplesSection.tsx
 import React from 'react';
 import { MessageExample } from '../../types';
 

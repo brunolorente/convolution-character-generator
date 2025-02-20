@@ -1,4 +1,4 @@
-// src/components/LoadCharacterSection.tsx
+// src/components/characterEditor/LoadCharacterSection.tsx
 import React, { useRef, useState } from 'react';
 import { BackupListItem } from '../../types';
 

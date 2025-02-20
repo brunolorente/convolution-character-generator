@@ -4,7 +4,17 @@ export interface CharacterData {
   clients: string[];
   modelProvider: string;
   settings: {
-    secrets: Record<string, unknown>;
+    secrets: {
+      // Open Router
+      OPENROUTER_MODEL?: string,
+      OPENROUTER_API_KEY?: string,
+      // Telegram
+      TELEGRAM_BOT_TOKEN?: string,
+      // X
+      TWITTER_USERNAME?: string,
+      TWITTER_PASSWORD?: string,
+      TWITTER_EMAIL?: string,
+    };
     voice: {
       model: string;
     };

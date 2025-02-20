@@ -2,19 +2,11 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from '../routes/AppRoutes';
-import { ApiKeyService } from '../services/apiKeyService';
 import TopFrame from './TopFrame';
 
 
 const App: React.FC = () => {
   useEffect(() => {
-    const apiKeyService = ApiKeyService.getInstance();
-    const apiKeyInputEl = document.getElementById('api-key-input');
-    const apiKeyStatusEl = document.getElementById('api-key-status');
-    if (apiKeyInputEl && apiKeyStatusEl) {
-      apiKeyService.updateApiKeyDisplay(apiKeyInputEl, apiKeyStatusEl);
-    }
-
     const handleMouseMove = (e: MouseEvent) => {
       document.documentElement.style.setProperty('--mouse-x', `${e.clientX + 20}px`);
       document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);

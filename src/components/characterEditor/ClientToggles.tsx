@@ -1,4 +1,4 @@
-// src/components/ClientToggles.tsx
+// src/components/characterEditor/ClientToggles.tsx
 import React from 'react';
 
 interface ClientTogglesProps {

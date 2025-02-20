@@ -28,15 +28,4 @@ export class ApiKeyService {
   checkSavedApiKey(): boolean {
     return !!this.getApiKey();
   }
-
-  updateApiKeyDisplay(apiKeyInput: HTMLElement, apiKeyStatus: HTMLElement): void {
-    const hasKey = this.checkSavedApiKey();
-    apiKeyInput.style.display = hasKey ? 'none' : 'flex';
-    apiKeyStatus.style.display = hasKey ? 'flex' : 'none';
-    
-    const statusText = apiKeyStatus.querySelector('.status-text');
-    if (statusText) {
-      statusText.textContent = hasKey ? 'API key is set' : '';
-    }
-  }
 }

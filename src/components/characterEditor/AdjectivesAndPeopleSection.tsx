@@ -1,4 +1,4 @@
-// src/components/AdjectivesAndPeopleSection.tsx
+// src/components/characterEditor/AdjectivesAndPeopleSection.tsx
 import React from 'react';
 
 interface AdjectivesAndPeopleSectionProps {
